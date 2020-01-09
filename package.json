@@ -13,5 +13,7 @@
   "dependencies": {
     "nuxt": "^2.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "axios": "^0.19.1"
+  }
 }
