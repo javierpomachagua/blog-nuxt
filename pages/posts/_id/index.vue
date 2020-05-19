@@ -3,40 +3,31 @@
     <section class="post">
       <h1 class="post-title">{{ loadedPost.title }}</h1>
       <div class="post-details">
-        <div class="post-detail">Last updated on {{ loadedPost.updatedDate }}</div>
+        <div class="post-detail">Last updated on {{ loadedPost.updatedDate | date }}</div>
         <div class="post-detail">Written by {{ loadedPost.author }}</div>
       </div>
       <p class="post-content">{{ loadedPost.content }}</p>
     </section>
     <section class="post-feedback">
       <p>
-        Let me know about the post, send mail to <a href="#">email@do.com</a>
+        Let me know about the post, send mail to
+        <a href="#">email@do.com</a>
       </p>
     </section>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
-  asyncData(context, callback) {
-    setTimeout(() => {
-      callback(null, {
-        loadedPost: {
-          id: "1",
-          author: "Abi",
-          title: "Awesome Post (ID: " + context.route.params.id + ")",
-          content: "Super amazing!",
-          previewText: "Text Preview",
-          updatedDate: new Date(),
-          content:
-            "Loremp ipsum Loremp ipsum Loremp ipsumLoremp ipsum Loremp ipsum Loremp ipsum",
-          thumbnailLink:
-            "https://images.pexels.com/photos/3532326/pexels-photo-3532326.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-        }
-      });
-    }, 1000);
+  asyncData(context) {
+    return context.app.$axios
+      .$get('/posts/' + context.params.id + '.json')
+      .then(data => {
+        return {
+          loadedPost: data
+        };
+      })
+      .catch(e => context.error(e));
   }
 };
 </script>

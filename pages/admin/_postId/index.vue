@@ -1,7 +1,7 @@
 <template>
   <div class="admin-post-page">
     <section class="update-form">
-      <AdminPostForm :post="loadedPost" />
+      <AdminPostForm :post="loadedPost" @submit="onSubmitted" />
     </section>
   </div>
 </template>
@@ -10,20 +10,33 @@
 import AdminPostForm from "@/components/Admin/AdminPostForm";
 
 export default {
-  layout: 'admin',
+  layout: "admin",
+  middleware: ['check-auth', 'auth'],
   components: {
     AdminPostForm
   },
-  data() {
-    return {
-      loadedPost: {
-        author: "Abi",
-        title: "Awesome Post",
-        content: "Super amazing!",
-        thumbnailLink:
-          "https://images.pexels.com/photos/3532326/pexels-photo-3532326.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-      }
-    };
+  asyncData(context) {
+    return context.app.$axios
+      .$get(
+          "/posts/" +
+          context.params.postId +
+          ".json"
+      )
+      .then(data => {
+        return {
+          loadedPost: { ...data, id: context.params.postId }
+        };
+      })
+      .catch(e => context.error(e));
+  },
+  methods: {
+    onSubmitted(editedPost) {
+      console.log(editedPost);
+      this.$store.dispatch('editPost', editedPost)
+        .then(() => {
+          this.$router.push('/admin');
+        });
+    }
   }
 };
 </script>

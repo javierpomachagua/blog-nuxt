@@ -38,10 +38,11 @@ export default {
     }
   },
   data() {
-    return {
+    return {      
       editedPost: this.post
         ? { ...this.post }
         : {
+            id: "",
             author: "",
             title: "",
             thumbnail: "",
